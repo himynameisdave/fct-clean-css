@@ -42,32 +42,21 @@ app.controller('Controller', function ($scope, $log) {
 		$.each( selectorItems, function( i, val ){
 			var replacementText = val;
 
-			//	Checks for any shorthand use of 'margin:' or 'padding:'
-			shorthandHandler(replacementText);
+			//	Instead of even seeing if its the last one, we just grab the last one
+			//	TODO: if its not the last one, remove the first one - this will probably be a global function eventually to remove dupes
+			var marginIndex = replacementText.lastIndexOf("margin:"),
+				paddingIndex = replacementText.lastIndexOf("padding:");
+
+			//	Checks for any shorthand use of 'margin:' or 'padding:' and returns the block with shorthands expanded
+			replacementText = shorthandHandler(replacementText, marginIndex, paddingIndex);
 
 
 			// $log.log(replacementText.indexOf(";"));
 
-			var marginIndex = replacementText.indexOf("margin:"),
-				paddingIndex = replacementText.indexOf("padding:");
+			
 
 			//	This next pair of ifs go check to see if shorthand margins and paddings 
-			if ( marginIndex >= 0 ){
-
-
-
-				//	The plus 7 because there are 7 characters in 'margin:'
-				// $log.log( replacementText.slice( marginIndex + 7 ) );
-
-				// $log.log( 'margin:' + replacementText.indexOf("margin:") )
-				// $log.log( ';' + replacementText.indexOf(";") )
-
-			};
-			if ( paddingIndex >= 0 ){
-				
-				$log.log(appearsHowManyTimes( replacementText, 'padding:' ));
-
-			};
+			
 
 			// 	ends with a replace of the old stuff with the new stuff
 			newCleanCSS.replace( val, replacementText );
@@ -116,19 +105,71 @@ app.controller('Controller', function ($scope, $log) {
 
 
 	//	Handler for when shorthand 'margin' or 'padding' are used
-	var shorthandHandler = function ( type, val ) {
+	var shorthandHandler = function ( str, m, p ) {
+
+		//	If there is an instance of 'margin:'
+		if ( m >= 0 ){	
+
+			var trash, copyStr = str;
+			//	The plus 7 because there are 7 characters in 'margin:'
+			
+			//	get rid of everything before 'margin:' (everything up until last line break)
+			trash = copyStr.slice( 0, m );
+			copyStr = copyStr.replace(trash, "");
+			
+			$log.log( 'copyStr' );
+			$log.log( copyStr );
 
 
+
+
+
+			// $log.log( 'indexOf(margin:)' + m + 7 );
+			// $log.log( '; is @ ' + str.indexOf(";") )
+
+
+			//	get rid of everything after the ';' && insert a line break
+
+			//	now the only spaces are between each of your values
+			//	we need to count how many values were added
+
+				//	if 1:
+					// apply that amount to each margin level
+				//	if 2:
+					//	apply the first amount to the top and bottom and the second to left and r
+				//	if 3:
+					//	apply the 1st to mtop, 2nd to mleft and mright, 3rd to mbottom;
+				//	if 4:
+					//	apply around to each.
+
+
+		};
+		//	If there is an instance of 'padding:'
+		if ( p >= 0 ){
+			
+
+			//	If there happens to be more than one instance of padding, we only want the values of the last listed one
+			if( appearsHowManyTimes( 'padding:', str ) > 1){
+
+				// lastIndexOf()
+
+			};
+
+		};
 
 		//	break val up into 4 separate items
+
+
+
+		return str;
 
 	};
 
 
 	function initTextareas( ) {
 		$scope.bigText = true;
-		$scope.dirtyCSS = '\n\n\n\n\n\nAdd your CSS Here...';
-		$scope.cleanCSS = '\n\n\n\n\n\n...and see your results over here:';
+		$scope.dirtyCSS = '\n\n\n\n\n\nAdd your CSS Here...\n\n\n\n\n\n';
+		$scope.cleanCSS = '\n\n\n\n\n\n...and see your results over here:\n\n\n\n\n\n';
 	};
 
 
