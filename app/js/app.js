@@ -4,7 +4,18 @@
 String.prototype.isEmptyString = function() {
     return (this.length === 0 || !this.trim());
 };
-	
+//	All strings should also be able to have text inserted at a certain 
+String.prototype.insert = function (index, string) {
+  if (index > 0)
+    return this.substring(0, index) + string + this.substring(index, this.length);
+  else
+    return string + this;
+};
+//	All strings can now remove a 'line'
+String.prototype.deleteLine = function ( index ) {
+
+
+};
 
 
 var app = angular.module('app', [] );
@@ -42,6 +53,25 @@ app.controller('Controller', function ($scope, $log) {
 		$.each( selectorItems, function( i, val ){
 			var replacementText = val;
 
+			//	This will break each line of the block into it's own string, stored in an array
+			var lines = replacementText.split('\n');
+
+			//	Cycle through the lines and remove any empty ones (except the first and last);
+			$.each( lines, function( j, lineVal ){
+				//	ignore first and last
+				if( j > 0 && j < lines.length ){
+
+					//	if the string is empty
+					if( lineVal.isEmptyString() ){
+						lines.splice(j, 1);
+					} 
+				}
+			});
+
+
+			replacementText = lines.join('\n');
+			console.log( replacementText );
+
 			//	Instead of even seeing if its the last one, we just grab the last one
 			//	TODO: if its not the last one, remove the first one - this will probably be a global function eventually to remove dupes
 			var marginIndex = replacementText.lastIndexOf("margin:"),
@@ -76,6 +106,8 @@ app.controller('Controller', function ($scope, $log) {
 		$scope.cleanCSS	+= '\tError Message: \n'; 
 		$scope.cleanCSS	+= '\t' + errorMsg; 
 	};
+
+
 	//	spits out an array of stuff between curly braces
 	var stuffBetweenCurlies = function (str) {
 		var results = [], re = /{([^}]+)}/g, text;
@@ -84,7 +116,6 @@ app.controller('Controller', function ($scope, $log) {
 		}
 		return results;
 	};
-
 
 	//	This function takes a list of properties and spits them out as alphabetically
 	var alphabatize = function( props ){
@@ -116,19 +147,25 @@ app.controller('Controller', function ($scope, $log) {
 			//	get rid of everything before 'margin:' (everything up until last line break)
 			trash = copyStr.slice( 0, m );
 			copyStr = copyStr.replace(trash, "");
-			
-			$log.log( 'copyStr' );
-			$log.log( copyStr );
+				
 
+			//	get rid of everything after the ';' && insert a line break
+			trash = copyStr.slice( copyStr.indexOf(";")+1, copyStr.length );
+			copyStr = copyStr.replace(trash, "");
 
+			// $log.log( 'Our string is : ' );
+			// $log.log( copyStr );
 
+			// $log.log( 'trashing: ' );
+			// $log.log( trash );
 
 
 			// $log.log( 'indexOf(margin:)' + m + 7 );
 			// $log.log( '; is @ ' + str.indexOf(";") )
 
 
-			//	get rid of everything after the ';' && insert a line break
+
+			
 
 			//	now the only spaces are between each of your values
 			//	we need to count how many values were added
@@ -175,3 +212,4 @@ app.controller('Controller', function ($scope, $log) {
 
 });
 
+	
