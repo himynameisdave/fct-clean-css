@@ -125,8 +125,6 @@ app.controller('Controller', function ($scope, $log) {
 			return;
 		}
 
-
-
 		//	Compile a list of 'selector items' (stuff in between { }'s' )
 		var selectorItems = stuffBetweenCurlies( newCleanCSS )
 
@@ -214,6 +212,21 @@ app.controller('Controller', function ($scope, $log) {
 		return tempStr;
 	};
 
+
+	//	Function to round sub pixels to the nearest value
+	var roundSubPixelVals = function( str ){
+		//	building it using the same var names as in rgb function to simplify things
+		var tempStr = str;
+		
+		
+		
+		
+		//	Always return with the fucked around with string
+		return tempStr;
+	};
+
+
+	//	TODO: This should be a string proto
 	//	returns the number of times a substring appears in a string
 	var appearsHowManyTimes = function ( val, str ){
 		var r = new RegExp( val, 'g');
