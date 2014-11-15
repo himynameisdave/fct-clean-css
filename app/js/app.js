@@ -102,9 +102,19 @@ app.controller('Controller', function ($scope, $log) {
 			$.each(hexes, function( i, val ){
 
 				//	BUG: this doesn't handle shortcodes very well at all - convert them up to 6 digits
-				
-				var  realVal  = val.replace("#","").replace(";",""),
-					 rgbVals  = toRGB(realVal),// thanks to Dan Lamb for his hex-to-rgb microlibrary @ https://github.com/daniellmb/HEX-RGB-Conversion
+
+				var  realVal  = val.replace("#","").replace(";","");
+
+				if( realVal.length === 3 ) {
+
+					var r = realVal.slice(0,1) + realVal.slice(0,1),
+					    g = realVal.slice(1,2) + realVal.slice(1,2),
+					    b = realVal.slice(2,3) + realVal.slice(2,3),
+					    realVal = r+g+b;
+
+				}
+
+				var	 rgbVals  = toRGB(realVal),// thanks to Dan Lamb for his hex-to-rgb microlibrary @ https://github.com/daniellmb/HEX-RGB-Conversion
 					 rgbStr   = 'rgb( '+rgbVals[0]+', '+rgbVals[1]+', '+rgbVals[2]+' );';
 				// rgbs.push(rgbStr);
 				tempStr = tempStr.replace( val, rgbStr );
