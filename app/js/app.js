@@ -143,7 +143,10 @@ app.controller('Controller', function ($scope, $log) {
 		///CALLING THE SUBPIXEL CONVERSION
 		newCleanCSS = roundSubPixelVals( newCleanCSS );
 
+		///CALLING THE SHORTHANDLER;
+		newCleanCSS = shorthandler( newCleanCSS );
 
+		
 		//	Reset the clean side of the CSS with the new clean CSS
 		$scope.cleanCSS = '';
 		$scope.cleanCSS = newCleanCSS;
@@ -242,6 +245,21 @@ app.controller('Controller', function ($scope, $log) {
 		//	Always return with the fucked around with string
 		return tempStr;
 	};
+
+	//	Handles shorthand use of 'margin:' and 'padding:'
+	var shorthandler = function( str ) {
+		// a fake string to eff with
+		var tempStr = str;
+
+
+		//always retutn the messed with string
+		return tempStr;
+	};	
+
+
+
+
+
 
 
 	//	TODO: This should be a string proto
