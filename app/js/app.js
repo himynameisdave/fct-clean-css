@@ -2,7 +2,14 @@
 
 //	We need all strings to be able to check if they are empty or not...
 String.prototype.isEmptyString = function() {
-    return (this.length === 0 || !this.trim());
+
+	if(/\S/.test(this.toString())){
+		console.log(this.toString());
+		return false;
+	}else{
+    	// return (this.length === 0 || !this.trim());
+ 		return true;
+ 	}
 };
 //	All strings should also be able to have text inserted at a certain 
 String.prototype.insert = function (index, string) {
@@ -40,6 +47,8 @@ app.controller('Controller', function ($scope, $log) {
 			return;
 		}
 
+
+
 		//	Compile a list of 'selector items' (stuff in between { }'s' )
 		var selectorItems = stuffBetweenCurlies( newCleanCSS )
 
@@ -49,6 +58,13 @@ app.controller('Controller', function ($scope, $log) {
 			return;
 		}
 
+		///CALLING THE RGB/HEX CONVERSION
+		newCleanCSS = convertToRGB( newCleanCSS );
+
+/////////////////
+/////////TO BE REFACTORED
+/*
+
 		//	loops through each set of properties
 		$.each( selectorItems, function( i, val ){
 			var replacementText = val;
@@ -56,21 +72,35 @@ app.controller('Controller', function ($scope, $log) {
 			//	This will break each line of the block into it's own string, stored in an array
 			var lines = replacementText.split('\n');
 
+			// $log.log('lines length: '+lines.length);
+
+			var noEmptyLines = '';
 			//	Cycle through the lines and remove any empty ones (except the first and last);
 			$.each( lines, function( j, lineVal ){
+
 				//	ignore first and last
 				if( j > 0 && j < lines.length ){
-
-					//	if the string is empty
+					//	if the string is empty, get rid of it
 					if( lineVal.isEmptyString() ){
+
+
+
 						lines.splice(j, 1);
+					
+					}else{
+						noEmptyLines += lines[j];
 					} 
 				}
 			});
 
+			// $log.log('lines length (After): ' + lines.length);
 
-			replacementText = lines.join('\n');
-			console.log( replacementText );
+			$log.log('replacementText becomes: ');
+			$log.log(noEmptyLines);
+
+			replacementText = noEmptyLines;
+			// replacementText = lines.join('\n');
+			// console.log( replacementText );
 
 			//	Instead of even seeing if its the last one, we just grab the last one
 			//	TODO: if its not the last one, remove the first one - this will probably be a global function eventually to remove dupes
@@ -91,7 +121,7 @@ app.controller('Controller', function ($scope, $log) {
 			// 	ends with a replace of the old stuff with the new stuff
 			newCleanCSS.replace( val, replacementText );
 		});
-
+*/
 
 
 		//	Reset the clean side of the CSS with the new clean CSS
@@ -134,6 +164,9 @@ app.controller('Controller', function ($scope, $log) {
 		return (str.match(r) || []).length;
 	};
 
+/////////////////
+/////////TO BE REFACTORED
+/*
 
 	//	Handler for when shorthand 'margin' or 'padding' are used
 	var shorthandHandler = function ( str, m, p ) {
@@ -201,6 +234,7 @@ app.controller('Controller', function ($scope, $log) {
 		return str;
 
 	};
+*/
 
 
 	function initTextareas( ) {
