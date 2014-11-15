@@ -100,6 +100,9 @@ app.controller('Controller', function ($scope, $log) {
 		//	STEP 2: check if there are any hexes in the CSS
 		if( hexes != null ){
 			$.each(hexes, function( i, val ){
+
+				//	BUG: this doesn't handle shortcodes very well at all - convert them up to 6 digits
+				
 				var  realVal  = val.replace("#","").replace(";",""),
 					 rgbVals  = toRGB(realVal),// thanks to Dan Lamb for his hex-to-rgb microlibrary @ https://github.com/daniellmb/HEX-RGB-Conversion
 					 rgbStr   = 'rgb( '+rgbVals[0]+', '+rgbVals[1]+', '+rgbVals[2]+' );';
