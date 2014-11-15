@@ -21,6 +21,12 @@ String.prototype.insert = function (index, string) {
   else
     return string + this;
 };
+//	Woot woot find the index of a reg-exed val
+//	thanks stackOh: http://stackoverflow.com/questions/273789/is-there-a-version-of-javascripts-string-indexof-that-allows-for-regular-expr
+String.prototype.regexIndexOf = function(regex, startpos) {
+    var indexOf = this.substring(startpos || 0).search(regex);
+    return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf;
+};
 //	All strings can now remove a 'line'
 String.prototype.deleteLine = function ( index ) {
 
@@ -146,7 +152,7 @@ app.controller('Controller', function ($scope, $log) {
 		///CALLING THE SHORTHANDLER;
 		newCleanCSS = shorthandler( newCleanCSS );
 
-		
+
 		//	Reset the clean side of the CSS with the new clean CSS
 		$scope.cleanCSS = '';
 		$scope.cleanCSS = newCleanCSS;
@@ -170,12 +176,7 @@ app.controller('Controller', function ($scope, $log) {
 		return results;
 	};
 
-	//	This function takes a list of properties and spits them out as alphabetically
-	var alphabatize = function( str ){
-
-
-	};
-
+	
 	var convertToRGB = function( str ){
 		//	the string we can fuck with (and have it be different from the OG)
 		var tempStr = str;
@@ -251,12 +252,66 @@ app.controller('Controller', function ($scope, $log) {
 		// a fake string to eff with
 		var tempStr = str;
 
+		//	First half of this function tests for 'margin:' use
+		//	The second half tests for 'padding:' use;
+		var shortMars = tempStr.match(/margin\s*?\:.*?;/g),
+			shortPads = tempStr.match(/padding\s*?\:.*?;/g);
+
+		//	check if we found any shortMargins
+		if( shortMars != null ){	
+			//	since we found some, lets loop through em
+			$.each( shortMars, function(i, marVal){
+
+				$log.log(marVal);
+
+				//	get rid of all the shit text
+				marVal = marVal.replace("margin","").replace(":","").replace(";","");				
+
+				//	see if the first character is white space;
+				if( marVal.regexIndexOf( /\s/, 0 ) === 0 ){
+					marVal = marVal.replace(" ","");
+				};
+
+				$log.log(marVal)
+
+				//	stores the margin values;
+				var marginValues = [];
+
+
+				// $log.log(marVal.regexIndexOf( /\d*?px|%|em|pt|pc|ex|rem/g , 12 ));
+
+
+				// $log.log(newMarVal);
+				// tempStr = tempStr.replace( marVal, newMarVal );
+
+			});// end loop through short margins
+		};//end if short margins were found
+
+		//	check if we found any shortPads
+		if( shortPads != null ){
+			//	since we found some, lets loop through em
+			$.each( shortPads, function(j, padVal){
+
+
+				$log.log(padVal);
+
+
+			});// end loop through short paddings
+		};//end if shortPads were found.
 
 		//always retutn the messed with string
 		return tempStr;
 	};	
 
+	//	This function takes a list of properties and spits them out as alphabetically
+	var alphabatize = function( str ){
+		// a fake string to eff with
+		var tempStr = str;
 
+		
+		//always retutn the messed with string
+		return tempStr;
+	};
 
 
 
