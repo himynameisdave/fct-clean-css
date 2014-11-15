@@ -4,7 +4,6 @@
 String.prototype.isEmptyString = function() {
 
 	if(/\S/.test(this.toString())){
-		console.log(this.toString());
 		return false;
 	}else{
     	// return (this.length === 0 || !this.trim());
@@ -98,42 +97,16 @@ app.controller('Controller', function ($scope, $log) {
 		//	STEP 1: Find instances of '#000000' OR '#000'
 		var hexes = tempStr.match(/#.{3,6};/img);
 
-		//	STEP 2: Create a mirror array of rgb() values
-		var rgbs = [];
-
-		//	check if there are any hexes in the CSS
+		//	STEP 2: check if there are any hexes in the CSS
 		if( hexes != null ){
 			$.each(hexes, function( i, val ){
-				//without all the '#' and ';'
-				var realLength = val.length - 2;
-
-				//	STEP 2A): See if any of the hexes are mini hexes
-				$log.log(realLength);
-				//	Expand mini hexes
-				if( realLength === 3 ){
-
-				};
-				//	Could catch invalid hexes here:
-				if( realLength > 3 && realLength < 6 ){
-
-				};
-
-
-
+				var  realVal  = val.replace("#","").replace(";",""),
+					 rgbVals  = toRGB(realVal),// thanks to Dan Lamb for his hex-to-rgb microlibrary @ https://github.com/daniellmb/HEX-RGB-Conversion
+					 rgbStr   = 'rgb( '+rgbVals[0]+', '+rgbVals[1]+', '+rgbVals[2]+' );';
+				// rgbs.push(rgbStr);
+				tempStr = tempStr.replace( val, rgbStr );
 			});
 		};
-
-
-		// R = hexToR("#FFFFFF");
-		// G = hexToG("#FFFFFF");
-		// B = hexToB("#FFFFFF");
-
-		// function hexToR(h) {return parseInt((cutHex(h)).substring(0,2),16)}
-		// function hexToG(h) {return parseInt((cutHex(h)).substring(2,4),16)}
-		// function hexToB(h) {return parseInt((cutHex(h)).substring(4,6),16)}
-		// function cutHex(h) {return (h.charAt(0)=="#") ? h.substring(1,7):h}
-
-
 
 		//	always return that altered string
 		return tempStr;
