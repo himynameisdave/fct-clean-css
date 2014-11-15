@@ -1,1 +1,1 @@
-(function(a){a["toRGB"]=function(a){var b=parseInt(a,16);return[b>>16,b>>8&255,b&255]};a["toHex"]=function(a,b,c){return(c|b<<8|a<<16|1<<24).toString(16).slice(1)}})(this);
+!function(t){t.toRGB=function(t){var n=parseInt(t,16);return[n>>16,n>>8&255,255&n]},t.toHex=function(t,n,r){return(r|n<<8|t<<16|1<<24).toString(16).slice(1)}}(this);
