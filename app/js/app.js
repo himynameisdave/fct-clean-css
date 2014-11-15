@@ -61,9 +61,6 @@ app.controller('Controller', function ($scope, $log) {
 		///CALLING THE RGB/HEX CONVERSION
 		newCleanCSS = convertToRGB( newCleanCSS );
 
-/////////////////
-/////////TO BE REFACTORED
-/*
 
 		//	loops through each set of properties
 		$.each( selectorItems, function( i, val ){
@@ -121,7 +118,7 @@ app.controller('Controller', function ($scope, $log) {
 			// 	ends with a replace of the old stuff with the new stuff
 			newCleanCSS.replace( val, replacementText );
 		});
-*/
+
 
 
 		//	Reset the clean side of the CSS with the new clean CSS
@@ -163,10 +160,6 @@ app.controller('Controller', function ($scope, $log) {
 		var r = new RegExp( val, 'g');
 		return (str.match(r) || []).length;
 	};
-
-/////////////////
-/////////TO BE REFACTORED
-/*
 
 	//	Handler for when shorthand 'margin' or 'padding' are used
 	var shorthandHandler = function ( str, m, p ) {
