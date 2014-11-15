@@ -134,8 +134,15 @@ app.controller('Controller', function ($scope, $log) {
 			return;
 		}
 
+		//TODO: the rgbing and the sibPixeling should happen on a block by block basis and not globally..
+			//	like for reals just loop through the selectorItems
+
 		///CALLING THE RGB/HEX CONVERSION
 		newCleanCSS = convertToRGB( newCleanCSS );
+
+		///CALLING THE SUBPIXEL CONVERSION
+		newCleanCSS = roundSubPixelVals( newCleanCSS );
+
 
 		//	Reset the clean side of the CSS with the new clean CSS
 		$scope.cleanCSS = '';
@@ -161,8 +168,7 @@ app.controller('Controller', function ($scope, $log) {
 	};
 
 	//	This function takes a list of properties and spits them out as alphabetically
-	var alphabatize = function( props ){
-
+	var alphabatize = function( str ){
 
 
 	};
@@ -173,7 +179,7 @@ app.controller('Controller', function ($scope, $log) {
 
 		//	anything that starts with '#' and ends with ';' and is between 3 - 6 characters
 		//	TODO: in case the user does something dumb like "color: #000 ;"
-		var hexes = tempStr.match(/#.{3,6};/img);
+		var hexes = tempStr.match(/#.{3,6};/g);
 
 		//	if there aren't any hexes found, skip this and return the unfucked with tempStr
 		if( hexes != null ){
@@ -217,10 +223,22 @@ app.controller('Controller', function ($scope, $log) {
 	var roundSubPixelVals = function( str ){
 		//	building it using the same var names as in rgb function to simplify things
 		var tempStr = str;
-		
-		
-		
-		
+
+		//	grab anything that starts with a number, then has a decimal, then more digits, then 'px'
+		var subPixels = tempStr.match(/\d*?\.\d*?px/g);
+
+		//	check if we found any subpixels
+		if( subPixels != null ){
+			//	since we found some, lets loop through em
+			$.each( subPixels, function(i, val){
+				//	this spits out the rounded number plus the 'px' again which makes it a string again
+				var pixelVal = Math.round(parseFloat(val.replace("px",""))) + 'px';
+				
+				//	replace any instances of that old gross unrounded pixel with this hot young fresh pixel val
+				tempStr = tempStr.replace( val, pixelVal );
+			});
+		};//end if subpixels != null
+
 		//	Always return with the fucked around with string
 		return tempStr;
 	};
