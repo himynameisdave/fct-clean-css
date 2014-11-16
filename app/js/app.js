@@ -318,7 +318,10 @@ app.controller('Controller', function ($scope, $log) {
 		// a fake string to eff with
 		var tempStr = str;
 
+		//BRING IT ON, APLHABATIZE!!!!
+
 		
+
 		//always retutn the messed with string
 		return tempStr;
 	};
