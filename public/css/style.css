@@ -122,6 +122,7 @@ button:focus {
   padding: 0;
   border: 0;
   padding: 6px;
+  color: #f1f1f1;
   font-size: 13px;
   font-weight: normal;
   line-height: 14px;

@@ -21,6 +21,12 @@ String.prototype.insert = function (index, string) {
   else
     return string + this;
 };
+//	Woot woot find the index of a reg-exed val
+//	thanks stackOh: http://stackoverflow.com/questions/273789/is-there-a-version-of-javascripts-string-indexof-that-allows-for-regular-expr
+String.prototype.regexIndexOf = function(regex, startpos) {
+    var indexOf = this.substring(startpos || 0).search(regex);
+    return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf;
+};
 //	All strings can now remove a 'line'
 String.prototype.deleteLine = function ( index ) {
 
@@ -143,6 +149,9 @@ app.controller('Controller', function ($scope, $log) {
 		///CALLING THE SUBPIXEL CONVERSION
 		newCleanCSS = roundSubPixelVals( newCleanCSS );
 
+		///CALLING THE SHORTHANDLER;
+		newCleanCSS = shorthandler( newCleanCSS );
+
 
 		//	Reset the clean side of the CSS with the new clean CSS
 		$scope.cleanCSS = '';
@@ -167,12 +176,7 @@ app.controller('Controller', function ($scope, $log) {
 		return results;
 	};
 
-	//	This function takes a list of properties and spits them out as alphabetically
-	var alphabatize = function( str ){
-
-
-	};
-
+	
 	var convertToRGB = function( str ){
 		//	the string we can fuck with (and have it be different from the OG)
 		var tempStr = str;
@@ -243,6 +247,85 @@ app.controller('Controller', function ($scope, $log) {
 		return tempStr;
 	};
 
+	//	Handles shorthand use of 'margin:' and 'padding:'
+	var shorthandler = function( str ) {
+		// a fake string to eff with
+		var tempStr = str;
+
+		//	First half of this function tests for 'margin:' use
+		//	The second half tests for 'padding:' use;
+		var shortMars = tempStr.match(/margin\s*?\:.*?;/g),
+			shortPads = tempStr.match(/padding\s*?\:.*?;/g);
+
+		//	check if we found any shortMargins
+		if( shortMars != null ){	
+			//	since we found some, lets loop through em
+			$.each( shortMars, function(i, marVal){
+
+				var dummyMarVal = marVal;
+
+				//	get rid of all the shit text
+				dummyMarVal = marVal.replace("margin","").replace(":","").replace(";","");				
+
+				//	see if the first character is white space;
+				if( dummyMarVal.regexIndexOf( /\s/, 0 ) === 0 ){
+					dummyMarVal = dummyMarVal.replace(" ","");
+				};
+
+				//	stores the margin values;
+				var marginValues  = dummyMarVal.split(" "),
+					newMarginString = findVerboseStringToMake( marginValues, 'margin' );
+
+				//	replace the old 'margin: XXpx;' with the grossly verbose
+				tempStr = tempStr.replace( marVal, newMarginString );
+
+			});// end loop through short margins
+		};//end if short margins were found
+
+		//	check if we found any shortPads
+		if( shortPads != null ){
+			//	since we found some, lets loop through em
+			$.each( shortPads, function(j, padVal){
+
+				var dummyPadVal = padVal;
+
+				//	get rid of all the shit text
+				dummyPadVal = padVal.replace("padding","").replace(":","").replace(";","");				
+
+				//	see if the first character is white space;
+				//	TODO: destroy ALL whitespace before the first value
+				if( dummyPadVal.regexIndexOf( /\s/, 0 ) === 0 ){
+					dummyPadVal = dummyPadVal.replace(" ","");
+				};
+
+				//	stores the margin values;
+				var paddingValues  = dummyPadVal.split(" "),
+					newPaddingString = findVerboseStringToMake( paddingValues, 'padding' );
+
+				//	replace the old 'margin: XXpx;' with the grossly verbose
+				tempStr = tempStr.replace( padVal, newPaddingString );
+
+
+			});// end loop through short paddings
+		};//end if shortPads were found.
+
+		//always retutn the messed with string
+		return tempStr;
+	};	
+
+	//	This function takes a list of properties and spits them out as alphabetically
+	var alphabatize = function( str ){
+		// a fake string to eff with
+		var tempStr = str;
+
+		
+		//always retutn the messed with string
+		return tempStr;
+	};
+
+
+
+
 
 	//	TODO: This should be a string proto
 	//	returns the number of times a substring appears in a string
@@ -251,12 +334,60 @@ app.controller('Controller', function ($scope, $log) {
 		return (str.match(r) || []).length;
 	};
 
+	//	function for shorthander to spit out the string of 4 lines of margin vals, alphabatized;
+	var makeVerboseString = function( type, t, r, b, l ){
+		var vstr =  ''+type+'-bottom: '+b+'; \n'+
+					'    '+type+'-left: '+l+'; \n'+
+					'    '+type+'-right: '+r+'; \n'+
+					'    '+type+'-top: '+t+';';
+		return vstr;
+	};
+
+	//	vals is the array of values retrived, 
+	var findVerboseStringToMake = function( vals, type ){
+		var newStr = '';
+
+		switch( vals.length ) {
+
+			case 1:
+				var m = vals[0];
+				newStr = makeVerboseString( type, m, m, m, m );
+			break;
+
+			case 2:
+				var mtb = vals[0], mrl = vals[1];
+				newStr = makeVerboseString( type, mtb, mrl, mtb, mrl );
+			break;
+
+			case 3:
+				var mt = vals[0], mrl = vals[1], mb = vals[2];
+				newStr = makeVerboseString( type, mt, mrl, mb, mrl );
+			break;
+
+			case 4:
+				var mt = vals[0], mr = vals[1], mb = vals[2],  ml = vals[3];
+				newStr = makeVerboseString( type, mb, mr, mb, ml );
+			break;
+
+			default:
+				var m = vals[0];
+					newStr = makeVerboseString( type, m, m, m, m );
+					console.log('Hey why did the default for '+type+' get called?');
+					break;
+		};
+
+		return newStr;
+	};
+
+
 
 	function initTextareas( ) {
 		$scope.bigText = true;
 		$scope.dirtyCSS = '\n\n\n\n\n\nAdd your CSS Here...\n\n\n\n\n\n';
 		$scope.cleanCSS = '\n\n\n\n\n\n...and see your results over here:\n\n\n\n\n\n';
 	};
+
+
 
 
 });
