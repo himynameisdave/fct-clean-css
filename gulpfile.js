@@ -39,7 +39,7 @@ gulp.task('production', function(){
 		})
 		.pipe(gulp.dest('public/css/'));
 
-	gulp.src( 'app/index.html' )
+	gulp.src( ['app/index.html', 'app/copy-to-clip.swf'] )
 		.pipe( gulp.dest('public/') );
 
 });

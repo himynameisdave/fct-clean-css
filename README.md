@@ -14,4 +14,4 @@ Test It Out Here:
 ---
 
 ######What it can do/does so far:
-![css-clean-code-sample](http://i.imgur.com/bSpN3Zm.png)
+![css-clean-code-sample](http://i.imgur.com/MOEdUpg.png)
