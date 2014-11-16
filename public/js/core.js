@@ -139,8 +139,7 @@ app.controller('Controller', function ($scope, $log) {
 			return;
 		}
 
-		//	Compile a list of 'selector items' (stuff in between { }'s' )
-		var selectorItems = stuffBetweenCurlies( newCleanCSS )
+		var selectorItems = stuffBetweenCurlies( newCleanCSS );
 
 		//	Right off the bat, we know that if that list is empty there isnt any real css to validate
 		if( selectorItems.length == 0 ){
@@ -159,6 +158,9 @@ app.controller('Controller', function ($scope, $log) {
 
 		///CALLING THE SHORTHANDLER;
 		newCleanCSS = shorthandler( newCleanCSS );
+
+		///CALLING THE ALPHA:
+		newCleanCSS = alphabatize( newCleanCSS );
 
 
 		//	Reset the clean side of the CSS with the new clean CSS
@@ -324,9 +326,43 @@ app.controller('Controller', function ($scope, $log) {
 	//	This function takes a list of properties and spits them out as alphabetically
 	var alphabatize = function( str ){
 		// a fake string to eff with
-		var tempStr = str;
+		var tempStr = str,
+			blocks  = stuffBetweenCurlies( str );
 
-		
+		//	So long as there are actually blcks, loop thru em
+		if( blocks != null ){
+			//	Break string into blocks, loop
+			$.each( blocks, function(i, block){
+			
+				//	the string we gon replace the block with
+				var replaceStr = block;
+
+				//	splits each block into an array of lines
+				var lines = block.split("\n");
+
+				//	if there are indeed lines
+				if( lines != null ){	
+					replaceStr = '\n';
+
+					//	Alphabatize
+					lines.sort();
+					
+					//	loop through each line and add it to the replace str.
+					$.each( lines, function( j, line ){
+						var x = '';
+						if( j > 1 ){
+							x = '\n';
+						};
+						replaceStr += line+x;
+					});
+				};//	/if there are lines
+				
+				//	replace the OG block with this DOPE alphabatized one
+				tempStr = tempStr.replace( block, replaceStr );
+
+			});//	end loop through each block
+		};//	end check if there are blocks
+
 		//always retutn the messed with string
 		return tempStr;
 	};
