@@ -9,10 +9,7 @@
 	<!--Mobile - No Zooming-->
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<!--Scripts-->
 	<script type="text/javascript" src="js/core.js"></script>
-	
-	<!--Styles-->
 	<link rel="stylesheet" type="text/css" href="css/style.css"	/>
 
 </head>
@@ -32,6 +29,13 @@
 						ng-class="{ 'big-text' : bigText }"
 						ng-model="cleanCSS"
 						readonly></textarea>
+			<button class="copy-to-clip" 
+					clip-copy="cleanCSS" 
+					ng-click="copiedToClipboard()">
+
+				<span ng-hide="copied">Copy</span>
+				<span ng-show="copied">Copied!</span>
+			</button>
 		</div>
 	</main>
 
