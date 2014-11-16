@@ -21,8 +21,10 @@ gulp.task('production', function(){
 	var js = 'app/lib/js/';
 	gulp.src([ 
 				js+'angular.js',
+				js+'ng-clip.js',
 				js+'jquery.js',
 				js+'hex-to-rgb.js',
+				js+'string-textarea-protos.js',
 				'app/js/app.js'
 			])
 		.pipe(plug.concat('core.js'))
