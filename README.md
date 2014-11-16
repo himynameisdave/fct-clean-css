@@ -9,4 +9,9 @@ Building as a web app first to perfect the script, then going to build it as a n
 
 Test It Out Here:
 
-[###Demo](http://himynameisdave.github.io/fct-clean-css/)
+###[Demo](http://himynameisdave.github.io/fct-clean-css/)
+
+---
+
+######What it can do/does so far:
+![css-clean-code-sample](http://i.imgur.com/bSpN3Zm.png)

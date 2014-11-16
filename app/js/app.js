@@ -262,27 +262,22 @@ app.controller('Controller', function ($scope, $log) {
 			//	since we found some, lets loop through em
 			$.each( shortMars, function(i, marVal){
 
-				$log.log(marVal);
+				var dummyMarVal = marVal;
 
 				//	get rid of all the shit text
-				marVal = marVal.replace("margin","").replace(":","").replace(";","");				
+				dummyMarVal = marVal.replace("margin","").replace(":","").replace(";","");				
 
 				//	see if the first character is white space;
-				if( marVal.regexIndexOf( /\s/, 0 ) === 0 ){
-					marVal = marVal.replace(" ","");
+				if( dummyMarVal.regexIndexOf( /\s/, 0 ) === 0 ){
+					dummyMarVal = dummyMarVal.replace(" ","");
 				};
 
-				$log.log(marVal)
-
 				//	stores the margin values;
-				var marginValues = [];
+				var marginValues  = dummyMarVal.split(" "),
+					newMarginString = findVerboseStringToMake( marginValues, 'margin' );
 
-
-				// $log.log(marVal.regexIndexOf( /\d*?px|%|em|pt|pc|ex|rem/g , 12 ));
-
-
-				// $log.log(newMarVal);
-				// tempStr = tempStr.replace( marVal, newMarVal );
+				//	replace the old 'margin: XXpx;' with the grossly verbose
+				tempStr = tempStr.replace( marVal, newMarginString );
 
 			});// end loop through short margins
 		};//end if short margins were found
@@ -292,8 +287,23 @@ app.controller('Controller', function ($scope, $log) {
 			//	since we found some, lets loop through em
 			$.each( shortPads, function(j, padVal){
 
+				var dummyPadVal = padVal;
 
-				$log.log(padVal);
+				//	get rid of all the shit text
+				dummyPadVal = padVal.replace("padding","").replace(":","").replace(";","");				
+
+				//	see if the first character is white space;
+				//	TODO: destroy ALL whitespace before the first value
+				if( dummyPadVal.regexIndexOf( /\s/, 0 ) === 0 ){
+					dummyPadVal = dummyPadVal.replace(" ","");
+				};
+
+				//	stores the margin values;
+				var paddingValues  = dummyPadVal.split(" "),
+					newPaddingString = findVerboseStringToMake( paddingValues, 'padding' );
+
+				//	replace the old 'margin: XXpx;' with the grossly verbose
+				tempStr = tempStr.replace( padVal, newPaddingString );
 
 
 			});// end loop through short paddings
@@ -324,12 +334,60 @@ app.controller('Controller', function ($scope, $log) {
 		return (str.match(r) || []).length;
 	};
 
+	//	function for shorthander to spit out the string of 4 lines of margin vals, alphabatized;
+	var makeVerboseString = function( type, t, r, b, l ){
+		var vstr =  ''+type+'-bottom: '+b+'; \n'+
+					'    '+type+'-left: '+l+'; \n'+
+					'    '+type+'-right: '+r+'; \n'+
+					'    '+type+'-top: '+t+';';
+		return vstr;
+	};
+
+	//	vals is the array of values retrived, 
+	var findVerboseStringToMake = function( vals, type ){
+		var newStr = '';
+
+		switch( vals.length ) {
+
+			case 1:
+				var m = vals[0];
+				newStr = makeVerboseString( type, m, m, m, m );
+			break;
+
+			case 2:
+				var mtb = vals[0], mrl = vals[1];
+				newStr = makeVerboseString( type, mtb, mrl, mtb, mrl );
+			break;
+
+			case 3:
+				var mt = vals[0], mrl = vals[1], mb = vals[2];
+				newStr = makeVerboseString( type, mt, mrl, mb, mrl );
+			break;
+
+			case 4:
+				var mt = vals[0], mr = vals[1], mb = vals[2],  ml = vals[3];
+				newStr = makeVerboseString( type, mb, mr, mb, ml );
+			break;
+
+			default:
+				var m = vals[0];
+					newStr = makeVerboseString( type, m, m, m, m );
+					console.log('Hey why did the default for '+type+' get called?');
+					break;
+		};
+
+		return newStr;
+	};
+
+
 
 	function initTextareas( ) {
 		$scope.bigText = true;
 		$scope.dirtyCSS = '\n\n\n\n\n\nAdd your CSS Here...\n\n\n\n\n\n';
 		$scope.cleanCSS = '\n\n\n\n\n\n...and see your results over here:\n\n\n\n\n\n';
 	};
+
+
 
 
 });
