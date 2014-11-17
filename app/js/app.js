@@ -15,7 +15,7 @@ app.controller('Controller', function ($scope, $log) {
 	//	This function is called each time the textarea is changed
 	$scope.cleanSomeCSS = function() {
 		//	this is the new cleanCSS, which stores whatever changes need to be made to the CSS
-		var newCleanCSS = $scope.dirtyCSS;
+		var newCleanCSS = '';
 		
 		//	Remove that big-text class
 		$scope.bigText = false;
@@ -24,30 +24,56 @@ app.controller('Controller', function ($scope, $log) {
 		if ( $scope.dirtyCSS.isEmptyString() ){
 			initTextareas();
 			return;
-		}
+		};
 
-		var selectorItems = stuffBetweenCurlies( newCleanCSS );
+		var selectorItems = stuffBetweenCurlies( $scope.dirtyCSS );
 
 		//	Right off the bat, we know that if that list is empty there isnt any real css to validate
 		if( selectorItems.length == 0 ){
-			showErrorMsg( 'Is this really valid CSS?' );
+			showErrorMsg( 'Is this really valid CSS?' );//cuz if it aint, we're early returning
 			return;
 		}
 
-		//TODO: the rgbing and the sibPixeling should happen on a block by block basis and not globally..
-			//	like for reals just loop through the selectorItems
+		////	Break CSS string into lines
+		var lines = $scope.dirtyCSS.split("\n");
+		
+		//	now we get to loop through and test 
+		$.each( lines, function( index, line ){
 
-		///CALLING THE RGB/HEX CONVERSION
-		newCleanCSS = convertToRGB( newCleanCSS );
+			$log.log('Line (before):');
+			$log.log(line);
 
-		///CALLING THE SUBPIXEL CONVERSION
-		newCleanCSS = roundSubPixelVals( newCleanCSS );
+			// ///CALLING THE RGB/HEX CONVERSION
+			line = convertToRGB( line );
+			// ///CALLING THE SUBPIXEL CONVERSION
+			line = roundSubPixelVals( line );
+			// ///CALLING THE SHORTHANDLER;			
+			line = shorthandler( line );
 
-		///CALLING THE SHORTHANDLER;
-		newCleanCSS = shorthandler( newCleanCSS );
+			$log.log('Line (after):');
+			$log.log(line);
 
-		///CALLING THE ALPHA:
-		newCleanCSS = alphabatize( newCleanCSS );
+			//	This loop always ends with adding the line back on to the newCleanCSS
+			newCleanCSS += line + '\n';
+		});
+
+
+
+
+		// ///CALLING THE RGB/HEX CONVERSION
+		// newCleanCSS = convertToRGB( newCleanCSS );
+
+		// ///CALLING THE SUBPIXEL CONVERSION
+		// newCleanCSS = roundSubPixelVals( newCleanCSS );
+
+		// ///CALLING THE SHORTHANDLER;
+		// newCleanCSS = shorthandler( newCleanCSS );
+
+		// ///CALLING THE ALPHA:
+		// newCleanCSS = alphabatize( newCleanCSS );
+
+
+
 
 
 		//	Reset the clean side of the CSS with the new clean CSS
@@ -66,7 +92,10 @@ app.controller('Controller', function ($scope, $log) {
 
 	//	spits out an array of stuff between curly braces
 	var stuffBetweenCurlies = function (str) {
-		var results = [], re = /{([^}]+)}/g, text;
+		var results = [], 
+			re = /{([^}]+)}/g, 
+			text;
+
 		while(text = re.exec(str)) {
 			results.push(text[1]);
 		}
@@ -225,17 +254,17 @@ app.controller('Controller', function ($scope, $log) {
 				var replaceStr = block;
 
 				//	splits each block into an array of lines
-				var lines = block.split("\n");
+				var lineList = block.split("\n");
 
 				//	if there are indeed lines
-				if( lines != null ){	
+				if( lineList != null ){	
 					replaceStr = '\n';
 
 					//	Alphabatize
-					lines.sort();
+					lineList.sort();
 					
 					//	loop through each line and add it to the replace str.
-					$.each( lines, function( j, line ){
+					$.each( lineList, function( j, line ){
 						var x = '';
 						if( j > 1 ){
 							x = '\n';
