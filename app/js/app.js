@@ -226,8 +226,12 @@ app.controller('Controller', function ($scope, $log) {
 
 				//	splits each block into an array of lines
 				var lines = block.split("\n");
+				$.each( lines, function( key, ln ){
+					lines[key] = ln.replace("   ", "").replace("  ", "").replace(" ", "").replace("\t", "");
+				})
 
-				//	if there are indeed lines
+
+				//	if there are indeed lines	
 				if( lines != null ){	
 					replaceStr = '\n';
 
@@ -236,11 +240,11 @@ app.controller('Controller', function ($scope, $log) {
 					
 					//	loop through each line and add it to the replace str.
 					$.each( lines, function( j, line ){
-						var x = '';
+						var x = '', y = '';
 						if( j > 1 ){
-							x = '\n';
+							x = '  ', y = '\n';
 						};
-						replaceStr += line+x;
+						replaceStr += x+line+y;
 					});
 				};//	/if there are lines
 				
@@ -267,10 +271,10 @@ app.controller('Controller', function ($scope, $log) {
 
 	//	function for shorthander to spit out the string of 4 lines of margin vals, alphabatized;
 	var makeVerboseString = function( type, t, r, b, l ){
-		var vstr =  ''+type+'-bottom: '+b+'; \n'+
-					'    '+type+'-left: '+l+'; \n'+
-					'    '+type+'-right: '+r+'; \n'+
-					'    '+type+'-top: '+t+';';
+		var vstr =  	type+'-bottom: '+b+'; \n'+
+						type+'-left: '+l+'; \n'+
+						type+'-right: '+r+'; \n'+
+						type+'-top: '+t+';';
 		return vstr;
 	};
 
