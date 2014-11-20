@@ -16,7 +16,7 @@ app.controller('Controller', function ($scope, $log) {
 	$scope.cleanSomeCSS = function() {
 		//	this is the new cleanCSS, which stores whatever changes need to be made to the CSS
 		var newCleanCSS = $scope.dirtyCSS;
-		
+
 		//	Remove that big-text class
 		$scope.bigText = false;
 
@@ -43,8 +43,11 @@ app.controller('Controller', function ($scope, $log) {
 		///CALLING THE SUBPIXEL CONVERSION
 		newCleanCSS = roundSubPixelVals( newCleanCSS );
 
+		///CALLING THE QUOTE CONVERSION
+		newCleanCSS = quotesConversion( newCleanCSS );
+
 		///CALLING THE SHORTHANDLER;
-		newCleanCSS = shorthandler( newCleanCSS );
+		// newCleanCSS = shorthandler( newCleanCSS );
 
 		///CALLING THE ALPHA:
 		newCleanCSS = alphabatize( newCleanCSS );
@@ -73,7 +76,6 @@ app.controller('Controller', function ($scope, $log) {
 		return results;
 	};
 
-	
 	var convertToRGB = function( str ){
 		//	the string we can fuck with (and have it be different from the OG)
 		var tempStr = str;
@@ -134,13 +136,31 @@ app.controller('Controller', function ($scope, $log) {
 			$.each( subPixels, function(i, val){
 				//	this spits out the rounded number plus the 'px' again which makes it a string again
 				var pixelVal = Math.round(parseFloat(val.replace("px",""))) + 'px';
-				
+
 				//	replace any instances of that old gross unrounded pixel with this hot young fresh pixel val
 				tempStr = tempStr.replace( val, pixelVal );
 			});
 		};//end if subpixels != null
 
 		//	Always return with the fucked around with string
+		return tempStr;
+	};
+
+	//	Function to change over any single quotes to double quotes
+	var quotesConversion = function( str ){
+		//	make a copy of the string to fuck around with
+		var tempStr = str;
+
+		//	Break into rulesets
+		var blocks = stuffBetweenCurlies( tempStr );
+
+		//	loop through each block
+		$.each( blocks, function(i, val){
+			var noSingles = val.replace(/'/gi, "\"");
+			tempStr = tempStr.replace( val, noSingles );
+		});
+
+		//	Return string without single quotes and with dbls
 		return tempStr;
 	};
 
@@ -155,7 +175,7 @@ app.controller('Controller', function ($scope, $log) {
 			shortPads = tempStr.match(/padding\s*?\:.*?;/g);
 
 		//	check if we found any shortMargins
-		if( shortMars != null ){	
+		if( shortMars != null ){
 			//	since we found some, lets loop through em
 			$.each( shortMars, function(i, marVal){
 
@@ -220,14 +240,15 @@ app.controller('Controller', function ($scope, $log) {
 		if( blocks != null ){
 			//	Break string into blocks, loop
 			$.each( blocks, function(i, block){
-			
+
 				//	the string we gon replace the block with
 				var replaceStr = block;
 
 				//	splits each block into an array of lines
 				var lines = block.split("\n");
 				$.each( lines, function( key, ln ){
-					lines[key] = ln.replace("   ", "").replace("  ", "").replace(" ", "").replace("\t", "");
+					// lines[key] = ln.replace("   ", "").replace("  ", "").replace(" ", "").replace("\t", "");
+					lines[key] = ln.replace("\t", "");
 				})
 
 
@@ -237,17 +258,17 @@ app.controller('Controller', function ($scope, $log) {
 
 					//	Alphabatize
 					lines.sort();
-					
+
 					//	loop through each line and add it to the replace str.
 					$.each( lines, function( j, line ){
 						var x = '', y = '';
 						if( j > 1 ){
-							x = '  ', y = '\n';
+							x = ' ', y = '\n';
 						};
 						replaceStr += x+line+y;
 					});
 				};//	/if there are lines
-				
+
 				//	replace the OG block with this DOPE alphabatized one
 				tempStr = tempStr.replace( block, replaceStr );
 
@@ -257,8 +278,6 @@ app.controller('Controller', function ($scope, $log) {
 		//always retutn the messed with string
 		return tempStr;
 	};
-
-
 
 
 
@@ -320,10 +339,10 @@ app.controller('Controller', function ($scope, $log) {
 		$scope.copied = true;
 
 		setTimeout(function(){
-			$scope.copied = false;			
+			$scope.copied = false;
 			$scope.$digest();
 		}, 850);
-    };	
+    };
 
 	function initTextareas( ) {
 		$scope.bigText = true;
@@ -335,5 +354,3 @@ app.controller('Controller', function ($scope, $log) {
 
 
 });
-
-	
