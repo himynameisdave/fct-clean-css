@@ -1,5 +1,7 @@
-//	Written by Dave Lunny in the beaufitul year 2014
-//////////////////////////////////////////////////////////////////////////////////
+//
+//		Don't worry...
+//						...be app-y
+//
 var app = angular.module('app', ['ngClipboard'] );
 
 app.config(['ngClipProvider', function(ngClipProvider) {
@@ -69,7 +71,13 @@ app.controller('Controller', function ($scope, $log) {
 
 	//	spits out an array of stuff between curly braces
 	var stuffBetweenCurlies = function (str) {
-		var results = [], re = /{([^}]+)}/g, text;
+		var results = [],
+			re = /{([^}]+)}/g,
+			text;
+
+			console.log('re.exec(str):');
+			console.log( re.exec(str) );
+
 		while(text = re.exec(str)) {
 			results.push(text[1]);
 		}
@@ -228,7 +236,7 @@ app.controller('Controller', function ($scope, $log) {
 
 		//always retutn the messed with string
 		return tempStr;
-	};	
+	};
 
 	//	This function takes a list of properties and spits them out as alphabetically
 	var alphabatize = function( str ){
@@ -251,9 +259,8 @@ app.controller('Controller', function ($scope, $log) {
 					lines[key] = ln.replace("\t", "");
 				})
 
-
-				//	if there are indeed lines	
-				if( lines != null ){	
+				//	if there are indeed liness
+				if( lines != null ){
 					replaceStr = '\n';
 
 					//	Alphabatize
@@ -279,13 +286,55 @@ app.controller('Controller', function ($scope, $log) {
 		return tempStr;
 	};
 
-
-
 	//	TODO: This should be a string proto
 	//	returns the number of times a substring appears in a string
 	var appearsHowManyTimes = function ( val, str ){
 		var r = new RegExp( val, 'g');
 		return (str.match(r) || []).length;
+	};
+
+	//	vals is the array of values retrived, type is either 'margin' or 'padding'
+	var findVerboseStringToMake = function( vals, type ){
+		//	our brand new string!
+		var newStr = '';
+
+		//	Checking up on the how many values were supplied
+		switch( vals.length ) {
+
+			//	if one value, apply that val to all four of them
+			case 1:
+				var m = vals[0];
+				newStr = makeVerboseString( type, m, m, m, m );
+			break;
+
+			//	if two values, apply the first one to top and bottom and the second one to left and right
+			case 2:
+				var mtb = vals[0], mrl = vals[1];
+				newStr = makeVerboseString( type, mtb, mrl, mtb, mrl );
+			break;
+
+			//	if three vals, apply the first to the top, second to left and right, and the last one to the bottom
+			case 3:
+				var mt = vals[0], mrl = vals[1], mb = vals[2];
+				newStr = makeVerboseString( type, mt, mrl, mb, mrl );
+			break;
+
+			//	if four vals, apply one to each in order from top, right, bottom, left
+			case 4:
+				var mt = vals[0], mr = vals[1], mb = vals[2],  ml = vals[3];
+				newStr = makeVerboseString( type, mb, mr, mb, ml );
+			break;
+
+			//	defualt to just using the first val for all 4 of them
+			default:
+				var m = vals[0];
+					newStr = makeVerboseString( type, m, m, m, m );
+					console.log('Hey why did the default for '+type+' get called?');
+					break;
+		};
+
+		//	return the brand spankin new string
+		return newStr;
 	};
 
 	//	function for shorthander to spit out the string of 4 lines of margin vals, alphabatized;
@@ -297,43 +346,7 @@ app.controller('Controller', function ($scope, $log) {
 		return vstr;
 	};
 
-	//	vals is the array of values retrived, 
-	var findVerboseStringToMake = function( vals, type ){
-		var newStr = '';
-
-		switch( vals.length ) {
-
-			case 1:
-				var m = vals[0];
-				newStr = makeVerboseString( type, m, m, m, m );
-			break;
-
-			case 2:
-				var mtb = vals[0], mrl = vals[1];
-				newStr = makeVerboseString( type, mtb, mrl, mtb, mrl );
-			break;
-
-			case 3:
-				var mt = vals[0], mrl = vals[1], mb = vals[2];
-				newStr = makeVerboseString( type, mt, mrl, mb, mrl );
-			break;
-
-			case 4:
-				var mt = vals[0], mr = vals[1], mb = vals[2],  ml = vals[3];
-				newStr = makeVerboseString( type, mb, mr, mb, ml );
-			break;
-
-			default:
-				var m = vals[0];
-					newStr = makeVerboseString( type, m, m, m, m );
-					console.log('Hey why did the default for '+type+' get called?');
-					break;
-		};
-
-		return newStr;
-	};
-
-	// copys the new css to the clipboard when that btn gets clicked
+	//	handles the 
 	$scope.copiedToClipboard = function(){
 
 		$scope.copied = true;
@@ -344,13 +357,11 @@ app.controller('Controller', function ($scope, $log) {
 		}, 850);
     };
 
+    ///	called at the start/when css is blank to change the values of the css to these
 	function initTextareas( ) {
-		$scope.bigText = true;
+		$scope.bigText = true;//the default text is slightly bigger than the regular CSS text size
 		$scope.dirtyCSS = '\n\n\n\n\n\nAdd your CSS Here...\n\n\n\n\n\n';
 		$scope.cleanCSS = '\n\n\n\n\n\n...and see your results over here:\n\n\n\n\n\n';
 	};
-
-
-
 
 });

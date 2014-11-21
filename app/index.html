@@ -19,29 +19,28 @@
 
 	<!--APP.JS-->
 	<script type="text/javascript" src="js/app.js"></script>
-	
+
 	<!--Styles-->
 	<link rel="stylesheet" type="text/css" href="css/style.css"	/>
 
 </head>
 <body ng-controller="Controller">
-		
 
 	<main class="application">
 		<div class="half">
 			<textarea 	class="input"
 						ng-class="{ 'big-text' : bigText }"
-						ng-change="cleanSomeCSS()" 
-						ng-model="dirtyCSS" 
+						ng-change="cleanSomeCSS()"
+						ng-model="dirtyCSS"
 						ng-trim="false"></textarea>
 		</div><!--
 	--><div class="half">
-			<textarea 	class="input" 
+			<textarea 	class="input"
 						ng-class="{ 'big-text' : bigText }"
 						ng-model="cleanCSS"
 						readonly></textarea>
-			<button class="copy-to-clip" 
-					clip-copy="cleanCSS" 
+			<button class="copy-to-clip"
+					clip-copy="cleanCSS"
 					ng-click="copiedToClipboard()">
 
 				<span ng-hide="copied">Copy</span>
