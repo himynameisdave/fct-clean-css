@@ -75,11 +75,12 @@ app.controller('Controller', function ($scope, $log) {
 			re = /{([^}]+)}/g,
 			text;
 
-			console.log('re.exec(str):');
-			console.log( re.exec(str) );
-
 		while(text = re.exec(str)) {
 			results.push(text[1]);
+			text.forEach(function(val, i){
+				console.log('Val '+i);
+				console.log(val);
+			});
 		}
 		return results;
 	};
